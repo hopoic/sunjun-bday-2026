@@ -14,6 +14,7 @@
 <meta name="format-detection" content="telephone=no">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
+<link rel="stylesheet" href="gallery.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@500;700;900&display=swap" rel="stylesheet">
@@ -223,13 +224,14 @@
 
   <footer>
     가게 정보는 매거진·리뷰 사이트(엘르, 마리끌레르, 핫식신, 뽈레 등)와 2026년 보도 기준이라 영업시간·메뉴·가격·예약 여부는 바뀔 수 있어요.
-    11월 밤엔 날씨에 따라 야장을 안 펴는 곳도 있으니 출발 전 지도 앱에서 한 번 더 확인하세요.<br>
+    11월 밤엔 날씨에 따라 야장을 안 펴는 곳도 있으니 출발 전 지도 앱에서 한 번 더 확인하세요. 거리 사진은 Flickr의 크리에이티브 커먼즈 사진으로, 사진마다 작가와 라이선스를 표기했어요. 가게 사진 카드는 네이버 이미지 검색으로 연결됩니다.<br>
     🎉 고선준 님, 생일 축하드립니다!
   </footer>
 </div>
 
 <div class="toast" id="toast" role="status"></div>
 
+<script src="gallery.js"></script>
 <script>
 // ---------- Safe storage helpers ----------
 const store = {
@@ -408,6 +410,14 @@ function timelineHTML(p) {
   }).join("");
 }
 
+// Food keyword for the "음식" photo card (first bold menu item unless overridden)
+const FOOD = { "헤리티지 클럽": "칵테일", "익선잡방": "스테이크", "만선호프": "노가리" };
+function foodOf(x) {
+  if (FOOD[x.name]) return FOOD[x.name];
+  const m = x.menu.match(/<b>([^<]+)<\/b>/);
+  return m ? m[1].trim() : "";
+}
+
 function placeHTML(x) {
   const n = `https://map.naver.com/p/search/${enc(x.q)}`;
   const k = `https://map.kakao.com/link/search/${enc(x.q)}`;
@@ -417,6 +427,7 @@ function placeHTML(x) {
       <div><h4>${x.name}</h4><div class="kind">${x.kind}</div></div>
     </div>
     <p>${x.desc}</p>
+    ${storeStripHTML(x.q, "", foodOf(x))}
     <div class="menu">🍶 ${x.menu}</div>
     <div class="tip">💡 ${x.tip}</div>
     <div class="addr">📍 ${x.addr}</div>
@@ -439,6 +450,7 @@ function renderView() {
   document.getElementById("view").innerHTML = `<div class="fade">
     <section class="intro">
       <div class="card">
+        ${streetGalleryHTML(p.id)}
         <div class="plan-label">${p.label}</div>
         <h3>${p.title}</h3>
         <div class="tagline">${p.tagline}</div>
@@ -489,6 +501,7 @@ function renderView() {
     </section>
   </div>`;
 
+  initGalleries(document.getElementById("view"));
   document.querySelectorAll(".seg button").forEach(b => b.addEventListener("click", () => {
     mode = b.dataset.mode; store.set("bp-mode", mode);
     document.querySelectorAll(".seg button").forEach(x => x.setAttribute("aria-selected", String(x.dataset.mode === mode)));

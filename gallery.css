@@ -1,0 +1,75 @@
+/* Shared photo components (street gallery, store photo strip, fullscreen viewer) */
+
+/* ---------- Street gallery ---------- */
+.gallery { position: relative; margin: -16px -16px 14px; border-radius: 16px 16px 0 0; overflow: hidden; background: #000; }
+.g-track {
+  display: flex; overflow-x: auto; scroll-snap-type: x mandatory;
+  scrollbar-width: none; -webkit-overflow-scrolling: touch; overscroll-behavior-x: contain;
+}
+.g-track::-webkit-scrollbar { display: none; }
+.g-slide { flex: 0 0 100%; margin: 0; position: relative; scroll-snap-align: start; aspect-ratio: 4 / 3; }
+.g-slide img { width: 100%; height: 100%; object-fit: cover; display: block; cursor: zoom-in; background: #1a1714; }
+.g-slide figcaption {
+  position: absolute; left: 0; right: 0; bottom: 0; padding: 36px 14px 26px;
+  background: linear-gradient(transparent, rgba(0,0,0,.78)); color: #fff; display: grid; gap: 2px;
+  pointer-events: none;
+}
+.g-cap { font-weight: 650; font-size: 15px; text-shadow: 0 1px 2px rgba(0,0,0,.5); }
+.g-credit { pointer-events: auto; font-size: 10.5px; color: rgba(255,255,255,.72); text-decoration: none; width: fit-content; }
+.g-count {
+  position: absolute; top: 10px; right: 10px; font-size: 12px; font-weight: 700; color: #fff;
+  background: rgba(0,0,0,.5); padding: 3px 9px; border-radius: 99px;
+  -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+}
+.g-dots { position: absolute; left: 0; right: 0; bottom: 9px; display: flex; justify-content: center; gap: 5px; pointer-events: none; }
+.g-dots i { width: 6px; height: 6px; border-radius: 99px; background: rgba(255,255,255,.45); transition: width .25s, background .25s; }
+.g-dots i.on { width: 18px; background: #fff; }
+.g-nav {
+  position: absolute; top: 50%; transform: translateY(-60%); width: 36px; height: 36px; border-radius: 50%;
+  border: 0; background: rgba(0,0,0,.45); color: #fff; font-size: 22px; line-height: 1; display: none; cursor: pointer;
+}
+.g-nav.prev { left: 8px; } .g-nav.next { right: 8px; }
+@media (hover: hover) and (pointer: fine) { .g-nav { display: grid; place-items: center; } }
+.g-note { font-size: 12.5px; color: var(--muted); margin: -4px 0 14px; }
+
+/* ---------- Store photo strip ---------- */
+.shots { margin: 12px -16px 4px; }
+.shots-head { display: flex; align-items: baseline; justify-content: space-between; padding: 0 16px 8px; font-size: 13px; font-weight: 650; }
+.shots-head small { color: var(--dim); font-weight: 500; font-size: 11.5px; }
+.shots-track {
+  display: flex; gap: 10px; overflow-x: auto; scroll-snap-type: x mandatory; padding: 0 16px 4px;
+  scroll-padding: 0 16px; scrollbar-width: none; -webkit-overflow-scrolling: touch; overscroll-behavior-x: contain;
+}
+.shots-track::-webkit-scrollbar { display: none; }
+.shot {
+  flex: 0 0 42%; min-width: 132px; scroll-snap-align: start; position: relative;
+  aspect-ratio: 4 / 5; border-radius: 14px; padding: 12px; text-decoration: none; color: var(--text);
+  display: flex; flex-direction: column; justify-content: flex-end; gap: 1px; overflow: hidden;
+  border: 1px solid var(--line);
+  background:
+    radial-gradient(120% 80% at 80% 0%, var(--accent-soft), transparent 60%),
+    linear-gradient(160deg, var(--surface-2), var(--surface));
+}
+.shot b { font-size: 16px; font-family: var(--serif); }
+.shot small { font-size: 12px; color: var(--muted); line-height: 1.35; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.shot em { font-style: normal; font-size: 11.5px; font-weight: 700; color: #03c75a; margin-top: 6px; }
+.shot-i { position: absolute; top: 10px; right: 10px; font-size: 10.5px; color: var(--dim); font-weight: 700; }
+.shot-icon { position: absolute; top: 14px; left: 12px; width: 44px; height: 44px; }
+.shot-icon svg { width: 100%; height: 100%; fill: none; stroke: var(--accent); stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+.shot:active { transform: scale(.98); }
+
+/* ---------- Fullscreen viewer ---------- */
+.viewer { position: fixed; inset: 0; z-index: 50; background: #000; display: flex; flex-direction: column; animation: vfade .2s ease; }
+@keyframes vfade { from { opacity: 0; } to { opacity: 1; } }
+.v-track { flex: 1; display: flex; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; }
+.v-track::-webkit-scrollbar { display: none; }
+.v-track figure { flex: 0 0 100%; margin: 0; scroll-snap-align: start; display: flex; flex-direction: column; justify-content: center; padding: calc(56px + env(safe-area-inset-top, 0px)) 0 calc(24px + env(safe-area-inset-bottom, 0px)); }
+.v-track img { width: 100%; max-height: 72vh; object-fit: contain; }
+.v-track figcaption { color: #eee; font-size: 14px; padding: 12px 16px 0; line-height: 1.5; }
+.v-track figcaption a { color: rgba(255,255,255,.6); font-size: 11.5px; text-decoration: none; }
+.v-close, .v-count { position: absolute; top: calc(10px + env(safe-area-inset-top, 0px)); z-index: 2; color: #fff; }
+.v-close { right: 12px; width: 40px; height: 40px; border-radius: 50%; border: 0; background: rgba(255,255,255,.14); font-size: 18px; cursor: pointer; }
+.v-count { left: 16px; font-size: 13px; font-weight: 700; padding-top: 10px; }
+
+/* Grid items must be allowed to shrink so the horizontal strips don't widen cards */
+.places > *, .place, .intro .card { min-width: 0; }
